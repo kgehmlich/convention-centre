@@ -1,0 +1,23 @@
+{
+  "name": "convention-centre",
+  "version": "1.0.0",
+  "description": "A toy project to experiment with NodeJS and Redis",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kgehmlich/convention-centre.git"
+  },
+  "author": "Kyle Gehmlich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kgehmlich/convention-centre/issues"
+  },
+  "homepage": "https://github.com/kgehmlich/convention-centre#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "redis": "^2.8.0"
+  }
+}

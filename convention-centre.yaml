@@ -1,0 +1,161 @@
+openapi: 3.0.0
+info:
+  title: Convention Centre API
+  description: Provides access to convention centre conventions, rooms, and availabilities.
+  version: '0.1'
+
+servers:
+  - url: /api/v1
+
+paths:
+  /conventions:
+    get:
+      summary: Returns a list of conventions
+      tags:
+        - Conventions
+      responses:
+        '200':
+          description: A JSON object containing a list of conventions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    $ref: '#/components/schemas/ConventionList'
+                required:
+                  - items
+                  
+  /conventions/{id}:
+    get:
+      summary: Returns the details of the specified convention
+      tags:
+        - Conventions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: A JSON object containing details about the specified convention
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Convention'
+                  
+  /conventions/{id}/rooms:
+    get:
+      summary: Returns the rooms booked for the specified convention
+      tags:
+        - Conventions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: A JSON object containing a list of rooms
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    $ref: '#/components/schemas/RoomList'
+                required:
+                  - items
+
+  /rooms:
+    get:
+      summary: Returns a list of convention centre rooms
+      tags:
+        - Rooms
+      parameters:
+      - $ref: '#/components/parameters/AvailableFromParam'
+      - $ref: '#/components/parameters/AvailableToParam'
+      responses:
+        '200':
+          description: A JSON object containing a list of rooms
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    $ref: '#/components/schemas/RoomList'
+                required:
+                  - items
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+components:
+
+  schemas:
+    Convention:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+      required:
+        - id
+        - name
+        - location
+        - format
+        - site
+
+    ConventionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Convention'
+        
+    Room:
+      type: object
+      properties:
+        number:
+          type: string
+        floor:
+          type: integer
+        capacity:
+          type: integer
+        projector:
+          type: boolean
+          
+    RoomList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Room'
+        
+  parameters:
+    AvailableFromParam:
+      in: query
+      name: available[from]
+      description: Inclusive start date of search window
+      schema:
+        type: string
+        format: date
+      required: false
+    
+    AvailableToParam:
+      in: query
+      name: available[to]
+      description: Inclusive end date of search window
+      schema:
+        type: string
+        format: date
+      required: false
+
+  responses:
+    BadRequest:
+      description: Bad Request

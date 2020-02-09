@@ -1,8 +1,13 @@
 const express = require('express')
-const { getConventions } = require('./request-handlers')
+const { getConventions, getConventionById } = require('./request-handlers')
+const seeder = require('./db-seeder')
 
 const port = 3000
 const app = express()
+
+
+seeder.seedDb()
+
 
 app.get('/', (req, res) => {
     res.statusCode = 200
@@ -11,10 +16,7 @@ app.get('/', (req, res) => {
 
 app.get('/conventions', getConventions)
 
-app.get('/conventions/:id', (req, res) => {
-    res.statusCode = 200
-    res.send()
-})
+app.get('/conventions/:id', getConventionById)
 
 app.get('conventions/:id/rooms', (req, res) => {
     res.statusCode = 200

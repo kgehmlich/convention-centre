@@ -1,11 +1,25 @@
 const dataAccess = require('./data-access')
 
 exports.getConventions = function (req, res) {
-    dataAccess.getConventions(conventions => {
-        const items = conventions.map(mapConventionToResponse)
+    dataAccess.getConventions(results => {
+        const items = results.map(mapConventionToResponse)
         const body = { items }
         res.statusCode = 200
         res.send(body)
+    })
+}
+
+exports.getConventionById = function (req, res) {
+    const id = req.params.id
+    dataAccess.getConventionById(id, result => {
+        if (result === null) {
+            res.statusCode = 404
+            res.send()
+        } else {
+            res.statusCode = 200
+            const body = mapConventionToResponse(result)
+            res.send(body)
+        }
     })
 }
 

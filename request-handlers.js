@@ -23,6 +23,15 @@ exports.getConventionById = function (req, res) {
     })
 }
 
+exports.getRooms = function (req, res) {
+    dataAccess.getRooms(results => {
+        const items = results
+        const body = { items }
+        res.statusCode = 200
+        res.send(body)
+    })
+}
+
 function mapConventionToResponse(convention) {
     return {
         id: convention.id.toString(),

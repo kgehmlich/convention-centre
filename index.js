@@ -1,5 +1,9 @@
 const express = require('express')
-const { getConventions, getConventionById } = require('./request-handlers')
+const {
+    getConventions,
+    getConventionById,
+    getRooms
+} = require('./request-handlers')
 const seeder = require('./db-seeder')
 
 const port = 3000
@@ -23,9 +27,6 @@ app.get('conventions/:id/rooms', (req, res) => {
     res.send()
 })
 
-app.get('/rooms', (req, res) => {
-    res.statusCode = 200
-    res.send()
-})
+app.get('/rooms', getRooms)
 
 app.listen(port, () => console.log(`App is running (port ${port})`))

@@ -72,6 +72,10 @@ function addRoom(r) {
         'projector', r.projector
     )
     client.sadd('rooms', r.number)
+
+    if (r.projector) {
+        client.sadd('projector:rooms', r.number)
+    }
 }
 
 function addConvention(c) {

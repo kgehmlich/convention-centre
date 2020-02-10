@@ -2,19 +2,15 @@ const redis = require('redis')
 const client = redis.createClient()
 
 exports.getRooms = function (callback) {
-    let rooms = []
-    client.smembers('rooms', (err, roomNums) => {
-        let itemsReceived = 0
-        roomNums.forEach(roomNum => {
-            client.hgetall('room:' + roomNum, (err, room) => {
-                room.number = roomNum
-                rooms.push(room)
-                if (++itemsReceived >= roomNums.length) {
-                    callback(rooms)
-                }
-            })
-        })
-    })
+    client.smembers('rooms', (err, roomNums) => getRoomsFromRoomnumbers(roomNums, callback))
+}
+
+exports.getFilteredRooms = function (hasProjector, callback) {
+    if (hasProjector) {
+        client.sinter('rooms', 'projector:rooms', (err, roomNums) => getRoomsFromRoomnumbers(roomNums, callback))
+    } else {
+        client.sdiff('rooms', 'projector:rooms', (err, roomNums) => getRoomsFromRoomnumbers(roomNums, callback))
+    }
 }
 
 exports.getConventions = function (callback) {
@@ -40,4 +36,18 @@ exports.getConventionById = function (id, callback) {
             callback(convention)
         })
     }
+}
+
+function getRoomsFromRoomnumbers(roomNums, callback) {
+    let rooms = []
+    let itemsReceived = 0
+    roomNums.forEach(roomNum => {
+        client.hgetall('room:' + roomNum, (err, room) => {
+            room.number = roomNum
+            rooms.push(room)
+            if (++itemsReceived >= roomNums.length) {
+                callback(rooms)
+            }
+        })
+    })
 }

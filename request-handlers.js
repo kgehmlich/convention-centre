@@ -24,12 +24,28 @@ exports.getConventionById = function (req, res) {
 }
 
 exports.getRooms = function (req, res) {
-    dataAccess.getRooms(results => {
-        const items = results
-        const body = { items }
-        res.statusCode = 200
-        res.send(body)
-    })
+    if (req.query.projector) {
+        const hasProjector = req.query.projector === 'true'
+        dataAccess.getFilteredRooms(hasProjector, results => sendRoomsResponse(results, res))
+    } else {
+        dataAccess.getRooms(results => sendRoomsResponse(results, res))
+    }
+}
+
+function sendRoomsResponse(rooms, res) {
+    const items = rooms.map(mapRoomToResponse)
+    const body = { items }
+    res.statusCode = 200
+    res.send(body)
+}
+
+function mapRoomToResponse(room) {
+    return {
+        number: room.number,
+        floor: parseInt(room.floor),
+        capacity: parseInt(room.capacity),
+        projector: room.projector === 'true'
+    }
 }
 
 function mapConventionToResponse(convention) {

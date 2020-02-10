@@ -2,6 +2,7 @@ const express = require('express')
 const {
     getConventions,
     getConventionById,
+    getConventionRooms,
     getRooms
 } = require('./request-handlers')
 const seeder = require('./db-seeder')
@@ -22,10 +23,7 @@ app.get('/conventions', getConventions)
 
 app.get('/conventions/:id', getConventionById)
 
-app.get('conventions/:id/rooms', (req, res) => {
-    res.statusCode = 200
-    res.send()
-})
+app.get('/conventions/:id/rooms', getConventionRooms)
 
 app.get('/rooms', getRooms)
 

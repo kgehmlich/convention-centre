@@ -23,6 +23,11 @@ exports.getConventionById = function (req, res) {
     })
 }
 
+exports.getConventionRooms = function (req, res) {
+    const id = req.params.id
+    dataAccess.getConventionRooms(id, results => sendRoomsResponse(results, res))
+}
+
 exports.getRooms = function (req, res) {
     if (req.query.projector) {
         const hasProjector = req.query.projector === 'true'

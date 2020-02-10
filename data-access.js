@@ -30,12 +30,27 @@ exports.getConventions = function (callback) {
 }
 
 exports.getConventionById = function (id, callback) {
-    if (client.sismember('conventions', id)) {
-        client.hgetall('convention:' + id, (err, convention) => {
-            convention.id = id
-            callback(convention)
-        })
-    }
+    client.sismember('conventions', id, (err, isMember) => {
+        if (isMember === 1) {
+            client.hgetall('convention:' + id, (err, convention) => {
+                convention.id = id
+                callback(convention)
+            })
+        } else {
+            callback(null)
+        }
+    })
+}
+
+exports.getConventionRooms = function (id, callback) {
+    client.sismember('conventions', id, (err, isMember) => {
+        if (isMember === 1) {
+            const key = 'convention:' + id + ':rooms'
+            client.smembers(key, (err, roomNums) => getRoomsFromRoomnumbers(roomNums, callback))
+        } else {
+            callback(null)
+        }
+    })
 }
 
 function getRoomsFromRoomnumbers(roomNums, callback) {
